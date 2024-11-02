@@ -1,0 +1,3 @@
+Loaded categories and subcategories:
+Category: Programming
+./organize_pdfs.sh: line 105: declare: `-A': not a valid identifier

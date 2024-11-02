@@ -1,0 +1,11 @@
+/home/mohd/test_root_folder/Security_Cryptography.pdf
+/home/mohd/test_root_folder/AI_Machine_Learning.pdf
+/home/mohd/test_root_folder/Database_SQL.pdf
+/home/mohd/test_root_folder/Programming_Python.pdf
+/home/mohd/test_root_folder/Math_Linear_Algebra.pdf
+/home/mohd/test_root_folder/Programming_Java.pdf
+/home/mohd/test_root_folder/Database_NoSQL.pdf
+/home/mohd/test_root_folder/Math_Calculus.pdf
+/home/mohd/test_root_folder/Security_Network_Security.pdf
+/home/mohd/test_root_folder/AI_Neural_Networks.pdf
+/home/mohd/test_root_folder/Programming_C.pdf

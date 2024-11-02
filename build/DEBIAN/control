@@ -1,0 +1,8 @@
+Package: organize-pdfs
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: bash
+Maintainer: Your Name <youremail@example.com>
+Description: Multi-Level PDF File Organizer
