@@ -34,80 +34,92 @@ if [ -z "$ROOT_FOLDER" ]; then
     print_usage
     exit 1
 fi
-categories=("Programming" "AI" "Math" "Database" "Security")
-get_subcategories() {
-    local category="$1"
-    case "$category" in
-        Programming) echo "Python Java C" ;;
-        AI) echo "Machine_Learning Neural_Networks" ;;
-        Math) echo "Linear_Algebra Calculus" ;;
-        Database) echo "SQL NoSQL" ;;
-        Security) echo "Cryptography Network_Security" ;;
-        *) echo "" ;;
-    esac
-}
+declare -A categories
+categories=(
+    ["Programming"]="Python Java C"
+    ["AI"]="Machine_Learning Neural_Networks"
+    ["Math"]="Linear_Algebra Calculus"
+    ["Database"]="SQL NoSQL"
+    ["Security"]="Cryptography Network_Security"
+    ["Others"]=""
+)
 create_directories() {
-    mkdir -p "$ROOT_FOLDER/Others"
-    for category in "${categories[@]}"; do
+    for category in "${!categories[@]}"; do
         mkdir -p "$ROOT_FOLDER/$category"
-        subcats=$(get_subcategories "$category")
+        subcats=${categories[$category]}
         for subcat in $subcats; do
             mkdir -p "$ROOT_FOLDER/$category/$subcat"
         done
     done
 }
-categorize_files() {
-    echo "Processing files..."
-    find "$ROOT_FOLDER" -maxdepth 1 -type f -iname "*.pdf" | while read -r file; do
-        filename=$(basename "$file")
-        base_filename="${filename%.*}"  # Remove extension
-        base_filename="${base_filename//_/ }"  # Replace underscores with spaces
-        base_filename=" $base_filename "  # Add spaces at the beginning and end
-        moved=0
-        for category in "${categories[@]}"; do
-            subcats=$(get_subcategories "$category")
-            for subcat in $subcats; do
-                subcat_pattern="${subcat//_/ }"  # Replace underscores with spaces
-                shopt -s nocasematch
-                if [[ "$base_filename" =~ [[:space:]]$subcat_pattern[[:space:]] ]]; then
-                    echo "Moving file '$file' to '$ROOT_FOLDER/$category/$subcat/'"
-                    mv "$file" "$ROOT_FOLDER/$category/$subcat/"
-                    moved=1
-                    shopt -u nocasematch
-                    break 2  # Break out of both loops
+process_category() {
+    local category="$1"
+    local subcats="$2"
+    echo "Processing category: $category"
+    if [ -z "$subcats" ]; then
+        wait "${pids[@]}"
+        find "$ROOT_FOLDER" -maxdepth 1 -type f -iname "*.pdf" -exec mv "{}" "$ROOT_FOLDER/Others/" \;
+    else
+        for subcat in $subcats; do
+            subcat_pattern="${subcat//_/ }"
+            shopt -s nocasematch
+            find "$ROOT_FOLDER" -maxdepth 1 -type f -iname "*.pdf" | while read -r file; do
+                if [ ! -f "$file" ]; then
+                    continue
                 fi
-                shopt -u nocasematch
+                filename=$(basename "$file")
+                base_filename="${filename%.*}"
+                base_filename="${base_filename//_/ }"
+                base_filename=" $base_filename "
+                if [[ "$base_filename" =~ [[:space:]]$subcat_pattern[[:space:]] ]]; then
+                    mv "$file" "$ROOT_FOLDER/$category/$subcat/"
+                    echo "$file" >> "$ROOT_FOLDER/correctly_classified.txt"
+                fi
             done
+            shopt -u nocasematch
         done
-        if [ $moved -eq 0 ]; then
-            echo "Moving unclassified file '$file' to '$ROOT_FOLDER/Others/'"
-            mv "$file" "$ROOT_FOLDER/Others/"
-        fi
-    done
-}
-generate_report() {
-    total_files=$(find "$ROOT_FOLDER" -type f -iname "*.pdf" | wc -l)
-    if [ "$total_files" -eq 0 ]; then
-        echo "No PDF files found in the root directory."
-        exit 1
     fi
-    echo "Analysis Report:" > analysis_report.txt
-    echo "----------------" >> analysis_report.txt
-    for category in "${categories[@]}"; do
-        count=$(find "$ROOT_FOLDER/$category" -type f -iname "*.pdf" | wc -l)
-        percentage=$((count * 100 / total_files))
-        echo "$category: $percentage%" >> analysis_report.txt
-    done
-    others_count=$(find "$ROOT_FOLDER/Others" -type f -iname "*.pdf" | wc -l)
-    others_percentage=$((others_count * 100 / total_files))
-    echo "Others: $others_percentage%" >> analysis_report.txt
-    correctness=$((100 - others_percentage))
-    echo "" >> analysis_report.txt
-    echo "Correctness Score: $correctness%" >> analysis_report.txt
-    echo "Report generated: analysis_report.txt"
 }
 create_directories
-categorize_files
+initial_total_files=$(find "$ROOT_FOLDER" -maxdepth 1 -type f -iname "*.pdf" | wc -l)
+if [ "$initial_total_files" -eq 0 ]; then
+    echo "No PDF files found in the root directory."
+    exit 1
+fi
+rm -f "$ROOT_FOLDER/correctly_classified.txt"
+pids=()
+for category in "${!categories[@]}"; do
+    if [ "$category" != "Others" ]; then
+        subcats="${categories[$category]}"
+        process_category "$category" "$subcats" &
+        pids+=($!)
+    fi
+done
+for pid in "${pids[@]}"; do
+    wait "$pid"
+done
+process_category "Others" ""
+generate_report() {
+    echo "Analysis Report:" > "$ROOT_FOLDER/analysis_report.txt"
+    echo "----------------" >> "$ROOT_FOLDER/analysis_report.txt"
+    total_files=0
+    declare -A category_counts
+    for category in "${!categories[@]}"; do
+        count=$(find "$ROOT_FOLDER/$category" -type f -iname "*.pdf" | wc -l)
+        category_counts["$category"]=$count
+        total_files=$((total_files + count))
+    done
+    for category in "${!categories[@]}"; do
+        count=${category_counts[$category]}
+        percentage=$(awk "BEGIN {printf \"%.2f\", ($count/$total_files)*100}")
+        echo "$category: $percentage%" >> "$ROOT_FOLDER/analysis_report.txt"
+    done
+    correctly_classified=$(cat "$ROOT_FOLDER/correctly_classified.txt" 2>/dev/null | wc -l)
+    correctness=$(awk "BEGIN {printf \"%.2f\", ($correctly_classified/$total_files)*100}")
+    echo "" >> "$ROOT_FOLDER/analysis_report.txt"
+    echo "Correctness Score: $correctness%" >> "$ROOT_FOLDER/analysis_report.txt"
+    echo "Report generated: $ROOT_FOLDER/analysis_report.txt"
+}
 if [ "$REPORT" -eq 1 ]; then
     generate_report
 fi
