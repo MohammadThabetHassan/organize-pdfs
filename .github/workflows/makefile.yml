@@ -31,7 +31,7 @@ jobs:
         run: |
           sudo apt-get install -y libreoffice
           chmod +x generate_sample_pdfs.sh
-          ./generate_sample_pdfs.sh test_root_folder
+          ./generate_sample_pdfs.sh
 
       - name: List Contents of test_root_folder
         run: ls -la test_root_folder
