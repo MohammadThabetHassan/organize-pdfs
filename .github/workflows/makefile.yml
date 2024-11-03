@@ -19,7 +19,7 @@ jobs:
       - name: Set up Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y make dpkg-dev pandoc ghostscript texlive
+          sudo apt-get install -y make dpkg-dev pandoc
 
       - name: Build the Package
         run: make
@@ -29,8 +29,6 @@ jobs:
 
       - name: Generate Sample PDFs
         run: |
-          set -e
-          mkdir -p test_root_folder
           chmod +x generate_sample_pdfs.sh
           ./generate_sample_pdfs.sh test_root_folder
 
