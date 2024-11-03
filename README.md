@@ -1,6 +1,3 @@
-Certainly! Below is a comprehensive `README.md` file tailored to your **Multi-Level PDF File Organizer Using Threading and Scripting** project. This README covers all aspects of your project, including generating sample PDFs, deleting PDFs, organizing PDFs, installation instructions, usage examples, and more.
-
----
 
 # Multi-Level PDF File Organizer Using Threading and Scripting
 
@@ -464,6 +461,4 @@ This project is licensed under the [MIT License](LICENSE). You are free to use, 
 
 - **Testing:** Regularly test your scripts locally to catch and fix issues before pushing changes to the repository.
 
----
 
-**Feel free to customize this `README.md` further to better suit your project's specifics and personal preferences. If you need more assistance or have additional questions, don't hesitate to ask!**
