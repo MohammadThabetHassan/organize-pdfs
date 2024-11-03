@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      - name: Install LibreOffice
+        run: sudo apt-get install -y libreoffice
 
       - name: Set up Environment
         run: |
