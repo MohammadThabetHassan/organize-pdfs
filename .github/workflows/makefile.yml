@@ -1,27 +1,45 @@
-name: Makefile CI
+name: Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: configure
-      run: ./configure
+      - name: Set up Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make dpkg-dev libreoffice pandoc
 
-    - name: Install dependencies
-      run: make
+      - name: Build the Package
+        run: make
 
-    - name: Run check
-      run: make check
+      - name: Install the Package
+        run: sudo make install
 
-    - name: Run distcheck
-      run: make distcheck
+      - name: Generate Sample PDFs
+        run: |
+          mkdir -p test_root_folder
+          ./generate_sample_pdfs.sh
+
+      - name: Run the Organizer Script
+        run: organize_pdfs --root test_root_folder --report
+
+      - name: Display Analysis Report
+        run: cat test_root_folder/analysis_report.txt
+
+      - name: Uninstall the Package
+        run: sudo make uninstall
+
+      - name: Clean Up
+        run: make clean
