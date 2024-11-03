@@ -19,7 +19,7 @@ jobs:
       - name: Set up Environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y make dpkg-dev libreoffice pandoc
+          sudo apt-get install -y make dpkg-dev pandoc ghostscript texlive
 
       - name: Build the Package
         run: make
@@ -29,8 +29,13 @@ jobs:
 
       - name: Generate Sample PDFs
         run: |
+          set -e
           mkdir -p test_root_folder
-          ./generate_sample_pdfs.sh
+          chmod +x generate_sample_pdfs.sh
+          ./generate_sample_pdfs.sh test_root_folder
+
+      - name: List Contents of test_root_folder
+        run: ls -la test_root_folder
 
       - name: Run the Organizer Script
         run: organize_pdfs --root test_root_folder --report
