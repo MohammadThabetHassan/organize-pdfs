@@ -3,7 +3,7 @@
 # generate_sample_pdfs.sh - Script to generate sample PDF files for testing
 
 # Set the root folder where the sample PDFs will be created
-ROOT_FOLDER="/home/mohd/test_root_folder"
+ROOT_FOLDER="$GITHUB_WORKSPACE/test_root_folder"
 
 # Create the root folder if it doesn't exist
 mkdir -p "$ROOT_FOLDER"
