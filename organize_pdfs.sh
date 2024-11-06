@@ -101,7 +101,7 @@ done
 process_category "Others" ""
 generate_report() {
     echo "Analysis Report:" > "$ROOT_FOLDER/analysis_report.txt"
-    echo "----------------" >> "$ROOT_FOLDER/analysis_report.txt"
+     echo "----------------" >> "$ROOT_FOLDER/analysis_report.txt"
     total_files=0
     declare -A category_counts
     for category in "${!categories[@]}"; do
