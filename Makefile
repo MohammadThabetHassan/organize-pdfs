@@ -19,7 +19,7 @@ build:
 	echo "Priority: optional" >> $(DEB_DIR)/control
 	echo "Architecture: $(ARCH)" >> $(DEB_DIR)/control
 	echo "Depends: bash" >> $(DEB_DIR)/control
-	echo "Maintainer: Your Name <youremail@example.com>" >> $(DEB_DIR)/control
+	echo "Maintainer: Mohammad Thabet <Mohammad_Thabet@hotmail.com>" >> $(DEB_DIR)/control
 	echo "Description: Multi-Level PDF File Organizer" >> $(DEB_DIR)/control
 package:
 	dpkg-deb --build $(BUILD_DIR)
