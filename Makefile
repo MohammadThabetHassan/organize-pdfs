@@ -10,7 +10,7 @@ clean:
 build:
 	mkdir -p $(DEB_DIR)
 	mkdir -p $(BIN_DIR)
-	cp organize_pdfs.sh $(BIN_DIR)/organize_pdfs
+	cp bin/organize_pdfs.sh $(BIN_DIR)/organize_pdfs
 	chmod +x $(BIN_DIR)/organize_pdfs
 	mkdir -p $(DEB_DIR)
 	echo "Package: $(PACKAGE_NAME)" > $(DEB_DIR)/control
