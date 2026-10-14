@@ -453,7 +453,7 @@ This project is licensed under the [MIT License](LICENSE). You are free to use, 
 
 - **Environment Variables:** The `generate_sample_pdfs.sh` script uses the `GITHUB_WORKSPACE` environment variable, which is set by GitHub Actions. Ensure that when running locally, you provide the appropriate output directory.
   
-- **Packaging:** The provided `Makefile` automates the packaging process. Customize the `control` file within the `Makefile` as needed, especially the `Maintainer` and `Description` fields.
+- **Packaging:** The provided `Makefile` automates the packaging process. The `Maintainer` field of the generated `control` file defaults to the project author; set your own when building a package you distribute, for example `make MAINTAINER="Jane Doe <jane@example.org>"`.
 
 - **GitHub Actions:** The CI/CD workflow assumes the presence of certain dependencies. Ensure that your scripts are compatible with headless environments like CI runners.
 

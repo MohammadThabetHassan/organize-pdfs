@@ -4,6 +4,8 @@ ARCH = all
 BUILD_DIR = build
 DEB_DIR = $(BUILD_DIR)/DEBIAN
 BIN_DIR = $(BUILD_DIR)/usr/bin
+# Override when building your own package: make MAINTAINER="Name <email>"
+MAINTAINER ?= Mohammad Thabet <141744086+MohammadThabetHassan@users.noreply.github.com>
 all: clean build package
 clean:
 	rm -rf $(BUILD_DIR) *.deb
@@ -19,7 +21,7 @@ build:
 	echo "Priority: optional" >> $(DEB_DIR)/control
 	echo "Architecture: $(ARCH)" >> $(DEB_DIR)/control
 	echo "Depends: bash" >> $(DEB_DIR)/control
-	echo "Maintainer: Your Name <youremail@example.com>" >> $(DEB_DIR)/control
+	echo "Maintainer: $(MAINTAINER)" >> $(DEB_DIR)/control
 	echo "Description: Multi-Level PDF File Organizer" >> $(DEB_DIR)/control
 package:
 	dpkg-deb --build $(BUILD_DIR)
