@@ -4,3 +4,9 @@ build/
 
 # Created by generate_sample_pdfs.sh in CI and local test runs
 test_root_folder/
+
+# Output of organize_pdfs.sh --report and the sample PDFs it sorts;
+# an earlier run against the repo root had committed these
+analysis_report.txt
+correctly_classified.txt
+*.pdf
